@@ -270,14 +270,4 @@ setInterval(function(){
 	removePack.player = [];
 	removePack.bullet = [];
 	
-},1000/25);
-
-
-
-
-
-
-
-
-
-
+},1000/60);
