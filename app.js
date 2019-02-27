@@ -1,8 +1,3 @@
-
-require('./Database');
-require('./Entity');
-require('./client/Inventory');
-
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
@@ -10,69 +5,84 @@ var serv = require('http').Server(app);
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
+
 app.use('/client',express.static(__dirname + '/client'));
 
-serv.listen(process.env.PORT || 3000);
-console.log("Server started.");
+serv.listen(3000);
+console.log('server started.');
 
 var SOCKET_LIST = {};
+var PLAYER_LIST = {};
 
-
-var DEBUG = true;
-
+var Player = function(id){
+	var self = {
+		x:100,
+		y:10,
+		id:id,
+		number:"" + Math.floor(10 * Math.random()),
+		pressingRight:false,
+		pressingLeft:false,
+		pressingUp:false,
+		pressingDown:false,
+		speed:1,
+	}
+	self.updatePosition = function(){
+		if(self.pressingRight)
+			self.x += self.speed;
+		if(self.pressingLeft)
+			self.x -= self.speed;
+		if(self.pressingUp)
+			self.y -= self.speed;
+		if(self.pressingDown)
+			self.y += self.speed;
+	}
+	return self;
+}
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
+
+	console.log('user connection');
+
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
-	
-	socket.on('signIn',function(data){ //{username,password}
-		Database.isValidPassword(data,function(res){
-			if(!res)
-				return socket.emit('signInResponse',{success:false});
-			Database.getPlayerProgress(data.username,function(progress){
-				Player.onConnect(socket,data.username,progress);
-				socket.emit('signInResponse',{success:true});
-			})
-		});
-	});
-	socket.on('signUp',function(data){
-		Database.isUsernameTaken(data,function(res){
-			if(res){
-				socket.emit('signUpResponse',{success:false});		
-			} else {
-				Database.addUser(data,function(){
-					socket.emit('signUpResponse',{success:true});					
-				});
-			}
-		});		
-	});
-	
-	
+
+	var player = Player(socket.id);
+	PLAYER_LIST[socket.id] = player;
+
 	socket.on('disconnect',function(){
+
+		console.log('user disconnection');
+
 		delete SOCKET_LIST[socket.id];
-		Player.onDisconnect(socket);
+		delete PLAYER_LIST[socket.id];
 	});
-	
-	socket.on('evalServer',function(data){
-		if(!DEBUG)
-			return;
-		var res = eval(data);
-		socket.emit('evalAnswer',res);		
+
+	socket.on('keyPress',function(data){
+		if(data.inputId === 'left')
+			player.pressingLeft = data.state;
+		else if(data.inputId === 'right')
+			player.pressingRight = data.state;
+		else if(data.inputId === 'up')
+			player.pressingUp = data.state;
+		else if(data.inputId === 'down')
+			player.pressingDown = data.state;
 	});
-	
-	
-	
 });
 
-
 setInterval(function(){
-	var packs = Entity.getFrameUpdateData();
+	var pack = [];
+	for(var i in PLAYER_LIST){
+		var player = PLAYER_LIST[i];
+		player.updatePosition();
+		pack.push({
+			x:player.x,
+			y:player.y,
+			number:player.number
+		});
+	}
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
-		socket.emit('init',packs.initPack);
-		socket.emit('update',packs.updatePack);
-		socket.emit('remove',packs.removePack);
+		socket.emit('newPositions',pack);
 	}
-	
 },1000/60);

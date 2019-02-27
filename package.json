@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.13.4",
+    "nodemon": "^1.18.10",
     "socket.io": "^1.4.5"
   },
   "engines": {
@@ -12,7 +13,7 @@
   },
   "devDependencies": {},
   "scripts": {
-	"start": "node app.js"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC"
