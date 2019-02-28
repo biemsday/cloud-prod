@@ -14,6 +14,8 @@ console.log('server started.');
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
 
+//player info
+
 var Player = function(id){
 	var self = {
 		x:100,
@@ -39,24 +41,31 @@ var Player = function(id){
 	return self;
 }
 
+//start server
+
 var io = require('socket.io')(serv,{});
+
+//connection
+
 io.sockets.on('connection', function(socket){
 
 	console.log('user connection');
-
 	socket.id = Math.random();
-	SOCKET_LIST[socket.id] = socket;
-
 	var player = Player(socket.id);
+	SOCKET_LIST[socket.id] = socket;
 	PLAYER_LIST[socket.id] = player;
+
+//disconnection
 
 	socket.on('disconnect',function(){
 
 		console.log('user disconnection');
-
 		delete SOCKET_LIST[socket.id];
 		delete PLAYER_LIST[socket.id];
+
 	});
+
+//movements
 
 	socket.on('keyPress',function(data){
 		if(data.inputId === 'left')
@@ -69,6 +78,8 @@ io.sockets.on('connection', function(socket){
 			player.pressingDown = data.state;
 	});
 });
+
+//update loop
 
 setInterval(function(){
 	var pack = [];
