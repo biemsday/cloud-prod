@@ -103,6 +103,8 @@ Player.update = function () {
 
 //start server
 
+var DEBUG = true;
+
 var io = require('socket.io')(serv,{});
 
 //connection
@@ -114,6 +116,21 @@ io.sockets.on('connection', function(socket){
 	SOCKET_LIST[socket.id] = socket;
 	Player.onConnection(socket);
 
+//chatMsg
+
+	socket.on('sendMsgToServer',function(data){
+		var playerName = ("" + socket.id).slice(2,7);
+		for(var i in SOCKET_LIST){
+			SOCKET_LIST[i].emit('chatMsg',playerName+': '+data);
+		}
+	});
+
+	socket.on('evalServer',function(data){
+		if(!DEBUG)
+			return;
+		var res = eval(data);
+		socket.emit('evalAnswer',res);
+	});
 
 //disconnection
 
@@ -122,9 +139,6 @@ io.sockets.on('connection', function(socket){
 		delete SOCKET_LIST[socket.id];
 		Player.onDisconnection(socket);
 	});
-
-//movements
-
 
 });
 
