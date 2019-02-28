@@ -1,5 +1,4 @@
 #ui{
-    display: inline-block;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -8,48 +7,16 @@
     left: 0;
     z-index: 1;
 }
-.userinfo {
-    width:auto;
-    height:100px;
+.common {
+    width: 100%;
+    height: auto;
     display: flex;
     flex-wrap: wrap;
-    align-content:center;
-    position: absolute;
+    align-content:stretch;
+}
+.common div {
+    width: 33.33%;
+    height: auto;
     background: lightslategrey;
-    top: 50px;
-    left: 50px;
-}
-.userinfo div#avatar {
-    width: auto;
-    height: auto;
-    margin: 10px 0 10px 10px;
-}
-.userinfo div#info {
-    width: 170px;
-    height: auto;
-    margin: 10px 0 10px 10px;
-    display: flex;
-    flex-wrap: wrap;
-    align-content:flex-start;
-}
-.userinfo span{
-    width: auto;
-    height: auto;
-    padding: 5px;
-    margin: 10px 0 10px 10px;
-    font-size: 10pt;
-}
-.userinfo span#hp{
-    width: 150px;
-    background: red;
-    padding: 0;
-    margin: 0 10px 10px 10px;
-    text-align: center;
-}
-.userinfo span#mp{
-    width: 150px;
-    background: blue;
-    padding: 0;
-    margin: 0 10px 10px 10px;
-    text-align: center;
+    opacity: 0.5;
 }
