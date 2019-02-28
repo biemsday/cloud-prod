@@ -112,14 +112,14 @@ var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
 
 	console.log('user connection');
-	socket.id = Math.random();
+	socket.id = Math.floor(99999 * Math.random());
 	SOCKET_LIST[socket.id] = socket;
 	Player.onConnection(socket);
 
 //chatMsg
 
 	socket.on('sendMsgToServer',function(data){
-		var playerName = ("" + socket.id).slice(2,7);
+		var playerName = ("user-" + socket.id);
 		for(var i in SOCKET_LIST){
 			SOCKET_LIST[i].emit('chatMsg',playerName+': '+data);
 		}
@@ -139,7 +139,6 @@ io.sockets.on('connection', function(socket){
 		delete SOCKET_LIST[socket.id];
 		Player.onDisconnection(socket);
 	});
-
 });
 
 //update loop
