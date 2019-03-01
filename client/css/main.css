@@ -47,6 +47,7 @@ canvas {
         height: auto;
         width: 200px;
         background: #1f1e1d;
+        border-radius: 5px;
         text-align: center;
         font-size: 5pt;
         font-family: "FR73PixelW00-Regular";
