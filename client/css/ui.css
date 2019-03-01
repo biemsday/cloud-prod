@@ -7,6 +7,8 @@
     left: 0;
     z-index: 1;
     opacity: 0.7;
+    font-size: 5pt;
+    font-family: "FR73PixelW00-Regular";
 }
 .common {
     width: 100%;
@@ -26,7 +28,7 @@ div.chat{
     display: flex;
     flex-wrap: wrap;
     align-content:stretch;
-    border-radius: 5px;
+    border-radius: 2px;
     overflow: scroll;
     overflow-y: hidden;
     overflow-x: hidden;
@@ -61,5 +63,7 @@ input#chatInput{
     height: 20px;
     width: 100%;
     text-align: left;
-    border-radius: 5px;
+    border-radius: 2px;
+    font-size: 5pt;
+    font-family: "FR73PixelW00-Regular";
 }
