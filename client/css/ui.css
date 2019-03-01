@@ -22,8 +22,11 @@
     height: 50%;
 }
 div.chat{
-    width: auto;
-    height: 100%;
+    position: relative;
+    top: 50%;
+    margin-top: -75px;
+    width: 400px;
+    height: 250px;
     background: lightgray;
     display: flex;
     flex-wrap: wrap;
@@ -32,11 +35,10 @@ div.chat{
     overflow: scroll;
     overflow-y: hidden;
     overflow-x: hidden;
-    margin: -20px 40px -80px 20px;
 }
 div#chatText.chattext{
     width: 100%;
-    height: calc(100% - 40px);
+    height: calc(250px - 40px);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -67,3 +69,48 @@ input#chatInput{
     font-size: 5pt;
     font-family: "FR73PixelW00-Regular";
 }
+div#stick,div.joystick{
+    display: none;
+}
+@media screen and (max-height: 550px){
+    div.chat{
+        width: 100%;
+        height: 100px;
+        margin-top: -25px;
+    }
+    div#chatText.chattext{
+        width: 100%;
+        height: calc(100px - 40px);
+    }
+    form#chatForm{
+        width: 100%;
+        height: 20px;
+    }
+    div#stick{
+        display: block;
+        position: relative;
+        background: lightgray;
+        border-radius: 100%;
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        left: 50%;
+        margin: -50px 0 0 -50px;
+    }
+    div.joystick {
+        display: block;
+        padding: 0;
+        top: 50%;
+        left: 50%;
+        margin: -25px 0 0 -25px;
+        position: absolute;
+        background-color: darkgray;
+        border-radius: 100%;
+        cursor: pointer;
+        height: 50px;
+        width: 50px;
+        user-select: none;
+    }
+}
+
+
