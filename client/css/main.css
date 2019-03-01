@@ -7,7 +7,7 @@ html, body{
     left: 0;
     overflow: auto;
 }
-canvas{
+canvas {
     z-index: 0;
     display: block;
     width: 100%;
@@ -16,15 +16,4 @@ canvas{
     image-rendering: pixelated;
     border: none;
     background: whitesmoke;
-}
-@media only screen and (orientation: portrait) {
-    html {
-        transform: rotate(-90deg);
-        transform-origin: left top;
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-        position: absolute;
-    top: 100%;
-    }
 }
