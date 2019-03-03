@@ -33,14 +33,12 @@ document.onkeyup = function(event){
         socket.emit('keyPress',{inputId:'up',state:false});
 }
 
-//nipples
+//joystick
 
 const joystick = createJoystick(document.getElementById('stick'));
 
-// setInterval(() => console.log(joystick.getPosition()), 16);
-
 function createJoystick(parent) {
-    const maxDiff = 100;
+    const maxDiff = 50;
     const stick = document.createElement('div');
     stick.classList.add('joystick');
 
@@ -67,16 +65,17 @@ function createJoystick(parent) {
             x: event.clientX,
             y: event.clientY,
         };
-
     }
 
     function handleMouseMove(event) {
         if (dragStart === null) return;
         event.preventDefault();
+
         if (event.changedTouches) {
             event.clientX = event.changedTouches[0].clientX;
             event.clientY = event.changedTouches[0].clientY;
         }
+
         const xDiff = event.clientX - dragStart.x;
         const yDiff = event.clientY - dragStart.y;
         const angle = Math.atan2(yDiff, xDiff);
@@ -85,6 +84,10 @@ function createJoystick(parent) {
         const yNew = distance * Math.sin(angle);
         stick.style.transform = `translate3d(${xNew}px, ${yNew}px, 0px)`;
         currentPos = { x: xNew, y: yNew };
+
+        const dir = parseFloat(angle).toFixed(0);
+
+        joystickMove(dir);
     }
 
     function handleMouseUp(event) {
@@ -93,10 +96,39 @@ function createJoystick(parent) {
         stick.style.transform = `translate3d(0px, 0px, 0px)`;
         dragStart = null;
         currentPos = { x: 0, y: 0 };
+
+        socket.emit('keyPress',{inputId:'left',state:false});
+        socket.emit('keyPress',{inputId:'right',state:false});
+        socket.emit('keyPress',{inputId:'down',state:false});
+        socket.emit('keyPress',{inputId:'up',state:false});
     }
 
     parent.appendChild(stick);
     return {
         getPosition: () => currentPos,
     };
+
+    function joystickMove(dir) {
+        if(dir === "0"|| dir === "-0" || dir === "-1" || dir === "1"){
+            socket.emit('keyPress',{inputId:'right',state:true});
+        } else {
+            socket.emit('keyPress',{inputId:'right',state:false});
+        }
+        if(dir === "3"|| dir === "-3" || dir === "-2" || dir === "2"){
+            socket.emit('keyPress',{inputId:'left',state:true});
+        } else {
+            socket.emit('keyPress',{inputId:'left',state:false});
+        }
+        if(dir === "-2"|| dir === "-1" || dir === "-3"){
+            socket.emit('keyPress',{inputId:'up',state:true});
+        } else {
+            socket.emit('keyPress',{inputId:'up',state:false});
+        }
+        if(dir === "2"|| dir === "1" || dir === "3"){
+            socket.emit('keyPress',{inputId:'down',state:true});
+        } else {
+            socket.emit('keyPress',{inputId:'down',state:false});
+        }
+    }
 }
+
