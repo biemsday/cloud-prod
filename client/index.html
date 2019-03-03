@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>project-w</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=100%, initial-scale=1, shrink-to-fit=no, user-scalable=0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="w">
     <meta name="theme-color" content="#1f1e1d">
@@ -29,8 +29,9 @@
     <link rel="stylesheet" href="client/css/main.css">
     <link rel="stylesheet" href="client/css/ui.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script src="client/js/main.js"></script>
 </head>
-<body>
+<body onload="setTimeout(function() { window.scrollTo(0, 1) }, 100);">
     <canvas id="ctx"></canvas>
     <div id="ui" class="common">
         <div id="lt"></div>
@@ -53,7 +54,7 @@
         <h1>Use landscape orientation</h1>
     </div>
 </body>
-    <script src="client/js/main.js"></script>
+
     <script src="client/js/movement.js"></script>
     <script src="client/js/chat.js"></script>
 </html>
