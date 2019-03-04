@@ -7,7 +7,7 @@
     left: 0;
     z-index: 1;
     opacity: 0.7;
-    font-size: 5pt;
+    font-size: 7pt;
     font-family: "FR73PixelW00-Regular";
 }
 .common {
@@ -66,7 +66,7 @@ input#chatInput{
     width: 100%;
     text-align: left;
     border-radius: 2px;
-    font-size: 5pt;
+    font-size: 7pt;
     font-family: "FR73PixelW00-Regular";
 }
 div#stick,div.joystick{

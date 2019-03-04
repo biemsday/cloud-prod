@@ -4,7 +4,7 @@
  "description": "mmorpg",
  "lang": "en-US",
  "start_url": "/",
- "display": "standalone",
+ "display": "fullscreen",
  "theme_color": "#1f1e1d",
  "background_color": "#1f1e1d",
  "icons": [
