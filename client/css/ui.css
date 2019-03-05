@@ -9,6 +9,34 @@
     opacity: 0.7;
     font-size: 7pt;
     font-family: "FR73PixelW00-Regular";
+    visibility: hidden;
+}
+.authForm{
+    width: 300px;
+    height: auto;
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: start;
+    padding: 2px;
+    margin: -75px 0 0 -150px;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+}
+.auth{
+    width: 100%;
+    height: auto;
+    padding: 5px;
+    font-size: 7pt;
+    font-family: "FR73PixelW00-Regular";
+    margin: 2px;
+    border-radius: 10px;
+    outline: none;
+}
+input#pass.auth {
+    -webkit-text-security: disc;
 }
 .common {
     width: 100%;
@@ -68,6 +96,7 @@ input#chatInput{
     border-radius: 2px;
     font-size: 7pt;
     font-family: "FR73PixelW00-Regular";
+    outline: none;
 }
 div#stick,div.joystick{
     display: none;

@@ -4,7 +4,10 @@
   "description": "mmorpg",
   "main": "app.js",
   "dependencies": {
+    "assert": "^1.4.1",
     "express": "^4.13.4",
+    "mongodb": "^3.1.13",
+    "mongojs": "^2.6.0",
     "nodemon": "^1.18.10",
     "socket.io": "^1.4.5"
   },

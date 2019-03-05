@@ -29,16 +29,18 @@
     <link rel="stylesheet" href="client/css/main.css">
     <link rel="stylesheet" href="client/css/ui.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-    <script src="client/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="../client/js/main.js"></script>
 </head>
 <body>
     <canvas id="ctx"></canvas>
+
     <div id="ui" class="common">
         <div id="lt"></div>
         <div id="mt"></div>
         <div id="rt"></div>
         <div id="lb">
-             <div id="stick"></div>
+            <div id="stick"></div>
         </div>
         <div id="mb">
             <div class="chat">
@@ -50,11 +52,13 @@
         </div>
         <div id="rb"></div>
     </div>
+
     <div id="rotation">
         <h1>Use landscape orientation</h1>
     </div>
 </body>
-
-    <script src="client/js/movement.js"></script>
-    <script src="client/js/chat.js"></script>
+    <script src="../client/js/auth.js"></script>
+    <script src="../client/js/movement.js"></script>
+    <script src="../client/js/chat.js"></script>
 </html>
+

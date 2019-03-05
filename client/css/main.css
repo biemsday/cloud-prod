@@ -16,6 +16,7 @@ canvas {
     image-rendering: pixelated;
     border: none;
     background: whitesmoke;
+    visibility: hidden;
 }
 
 div#rotation{
@@ -54,5 +55,8 @@ div#rotation{
         font-size: 5pt;
         font-family: "FR73PixelW00-Regular";
         display: block;
+    }
+    div#authForm.authForm{
+        display: none;
     }
 }

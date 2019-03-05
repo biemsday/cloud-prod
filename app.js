@@ -1,19 +1,38 @@
-var express = require('express');
-var app = express();
-var serv = require('http').Server(app);
+////////////////
+//SERVER-START//
+////////////////
+
+const express = require('express');
+const app = express();
+const serv = require('http').Server(app);
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
-
 app.use('/client',express.static(__dirname + '/client'));
-
 serv.listen(3000);
 console.log('server started.');
 
-var SOCKET_LIST = {};
+///////////
+//MONGODB//
+///////////
 
-//entity
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://biemsday:Kleopatra21@cluster0-od0we.gcp.mongodb.net/test?retryWrites=true";
+const client = new MongoClient(uri,  {useNewUrlParser: true});
+const dbName = "project-w";
+
+client.connect(function(err, client){
+	const db = client.db(dbName);
+	const col = db.collection('users');
+	console.log("Connected correctly to server");
+});
+
+//////////
+//ENTITY//
+//////////
+
+var SOCKET_LIST = {};
 
 var Entity = function() {
 	var self = {
@@ -22,18 +41,20 @@ var Entity = function() {
 		spdX: 0,
 		spdY: 0,
 		id: "",
-	}
+	};
 	self.update = function () {
 		self.updatePosition()
-	}
+	};
 	self.updatePosition = function () {
 		self.x += self.spdX;
 		self.y += self.spdY;
-	}
+	};
 	return self
-}
+};
 
-//player info
+///////////////
+//PLAYER-INFO//
+///////////////
 
 var Player = function(id){
 	var self = Entity();
@@ -49,7 +70,7 @@ var Player = function(id){
 		self.update = function () {
 			self.updateSpd();
 			superUpdate();
-		}
+		};
 
 		self.updateSpd = function () {
 			if(self.pressingRight)
@@ -65,13 +86,73 @@ var Player = function(id){
 				self.spdY = self.maxSpd;
 			else
 				self.spdY = 0;
-		}
+		};
+
 	Player.list[id] = self;
 	return self;
-}
+
+};
 
 Player.list = {};
+
+//////////////////
+//AUTHENTICATION//
+//////////////////
+
+var login = function(data,cb){
+
+	client.connect(function(err, client){
+
+		console.log("check user data");
+
+		const db = client.db(dbName);
+		const col = db.collection('users');
+
+		col.find({user:data.username, password:data.password}).limit(2).toArray(function(err, docs) {
+
+			if(docs.toString() !== ''){
+				cb(true);
+			} else {
+				cb(false);
+			}
+
+			client.close();
+		});
+	});
+};
+
+//////////////
+//CONNECTION//
+//////////////
+
 Player.onConnection = function (socket) {
+
+	socket.on('login',function(data){
+		login(data,function(res){
+			if(res){
+				console.log(res);
+				socket.emit('loginResponse',{success:true});
+				res = null;
+			} else {
+				console.log(res);
+				socket.emit('loginResponse',{success:false});
+				res = null;
+			}
+		});
+	});
+
+	socket.on('signUp',function(data){
+		isUsernameTaken(data,function(res){
+			if(res){
+				socket.emit('signUpResponse',{success:false});
+			} else {
+				addUser(data,function(){
+					socket.emit('signUpResponse',{success:true});
+				});
+			}
+		});
+	});
+
 	var player = Player(socket.id);
 	socket.on('keyPress',function(data){
 		if(data.inputId === 'left')
@@ -83,10 +164,12 @@ Player.onConnection = function (socket) {
 		else if(data.inputId === 'down')
 			player.pressingDown = data.state;
 	});
-}
+};
+
 Player.onDisconnection = function (socket) {
 	delete Player.list[socket.id];
-}
+};
+
 Player.update = function () {
 	var pack = [];
 	for(var i in Player.list){
@@ -99,15 +182,19 @@ Player.update = function () {
 		});
 	}
 	return pack;
-}
+};
 
-//start server
+////////////////
+//SERVER-START//
+////////////////
 
 var DEBUG = true;
 
 var io = require('socket.io')(serv,{});
 
-//connection
+//////////////
+//CONNECTION//
+//////////////
 
 io.sockets.on('connection', function(socket){
 

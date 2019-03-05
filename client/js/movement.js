@@ -1,7 +1,5 @@
 var ctx = document.getElementById('ctx').getContext('2d');
 
-var socket = io();
-
 socket.on('newPositions', function (data) {
     ctx.clearRect(0,0,500,500);
     for (var i = 0; i < data.length; i++) {
