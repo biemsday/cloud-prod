@@ -35,5 +35,3 @@ function removeForm() {
     let ui = document.getElementById('ui');
         ui.style.visibility = 'visible';
 }
-
-
