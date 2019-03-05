@@ -20,9 +20,11 @@ function addLoginForm () {
     };
     socket.on('loginResponse',function(data){
         if(data.success){
+            console.log("Sign in successul!");
             alert("Sign in successul!");
             removeForm();
         } else {
+            console.log("Sign in unsuccessul.");
             alert("Sign in unsuccessul.");
         }
     });

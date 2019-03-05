@@ -18,7 +18,7 @@ console.log('server started.');
 ///////////
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://biemsday:Kleopatra21@cluster0-od0we.gcp.mongodb.net/test?retryWrites=true";
+const uri = "mongodb://biemsday:Kleopatra21@cluster0-shard-00-00-od0we.gcp.mongodb.net:27017,cluster0-shard-00-01-od0we.gcp.mongodb.net:27017,cluster0-shard-00-02-od0we.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true";
 const client = new MongoClient(uri,  {useNewUrlParser: true});
 const dbName = "project-w";
 
