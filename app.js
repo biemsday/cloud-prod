@@ -1,6 +1,4 @@
-////////////////
 //SERVER-START//
-////////////////
 
 const express = require('express');
 const app = express();
@@ -13,9 +11,7 @@ app.use('/client',express.static(__dirname + '/client'));
 serv.listen(3000);
 console.log('server started.');
 
-///////////
 //MONGODB//
-///////////
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb://biemsday:Kleopatra21@cluster0-shard-00-00-od0we.gcp.mongodb.net:27017,cluster0-shard-00-01-od0we.gcp.mongodb.net:27017,cluster0-shard-00-02-od0we.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true";
@@ -28,13 +24,11 @@ client.connect(function(err, client){
 	console.log("Connected correctly to server");
 });
 
-//////////
 //ENTITY//
-//////////
 
 var SOCKET_LIST = {};
 
-var Entity = function() {
+var entity = function() {
 	var self = {
 		x: 100,
 		y: 10,
@@ -52,12 +46,10 @@ var Entity = function() {
 	return self
 };
 
-///////////////
 //PLAYER-INFO//
-///////////////
 
 var Player = function(id){
-	var self = Entity();
+	var self = entity();
 		self.id = id;
 		self.number = "" + Math.floor(10 * Math.random());
 		self.pressingRight = false;
@@ -95,65 +87,90 @@ var Player = function(id){
 
 Player.list = {};
 
-//////////////////
 //AUTHENTICATION//
-//////////////////
 
 var login = function(data,cb){
 
 	client.connect(function(err, client){
 
-		console.log("check user data");
+		console.log("connect to db");
 
 		const db = client.db(dbName);
 		const col = db.collection('users');
 
-		col.find({user:data.username, password:data.password}).limit(2).toArray(function(err, docs) {
+		col.find({username:data.username, password:data.password}).limit(2).toArray(function(err, docs) {
 
-			if(docs.toString() !== ''){
+			if(docs.toString() !== '' && docs[0].status === "offline"){
+				col.findOneAndUpdate({username:data.username, password:data.password}, {$set: {status: "online"}});
 				cb(true);
 			} else {
 				cb(false);
 			}
-
 			client.close();
 		});
 	});
 };
 
-//////////////
+var registration = function(data,cb){
+
+
+	client.connect(function(err, client){
+
+		console.log("connect to db");
+
+		const db = client.db(dbName);
+		const col = db.collection('users');
+
+		col.find({username:data.username}).limit(2).toArray(function(err, docs) {
+
+			if(docs.length === 0){
+				col.insertOne({username:data.username, password:data.password, status:"offline"});
+				cb(true);
+				console.log("DB: add new user - "+ data.username);
+			} else {
+				console.log("DB: username - "+data.username+", already used");
+				cb(false);
+			}
+			client.close();
+		});
+	});
+};
+
 //CONNECTION//
-//////////////
 
 Player.onConnection = function (socket) {
 
 	socket.on('login',function(data){
+
 		login(data,function(res){
+
 			if(res){
-				console.log(res);
 				socket.emit('loginResponse',{success:true});
 				res = null;
 			} else {
-				console.log(res);
+				console.log(Player.list);
 				socket.emit('loginResponse',{success:false});
 				res = null;
 			}
+
 		});
 	});
 
-	socket.on('signUp',function(data){
-		isUsernameTaken(data,function(res){
+	socket.on('registration',function(data){
+
+		registration(data,function(res){
+
 			if(res){
-				socket.emit('signUpResponse',{success:false});
+				socket.emit('registrationResponse',{success:false});
 			} else {
-				addUser(data,function(){
-					socket.emit('signUpResponse',{success:true});
-				});
-			}
+				socket.emit('registrationResponse', {success: true});
+			};
+
 		});
 	});
 
 	var player = Player(socket.id);
+
 	socket.on('keyPress',function(data){
 		if(data.inputId === 'left')
 			player.pressingLeft = data.state;
@@ -184,17 +201,13 @@ Player.update = function () {
 	return pack;
 };
 
-////////////////
 //SERVER-START//
-////////////////
 
 var DEBUG = true;
 
 var io = require('socket.io')(serv,{});
 
-//////////////
 //CONNECTION//
-//////////////
 
 io.sockets.on('connection', function(socket){
 
